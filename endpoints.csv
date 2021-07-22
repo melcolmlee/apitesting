@@ -1,0 +1,3 @@
+"endpoint","query"
+https://reqbin.com/echo/post/json,"{`"Id`": 78912,  `"Customer`": `"Jason Sweet`", `"Quantity`": 1, `"Price`": 18.00}"
+https://reqbin.com/echo/post/json,"{`"Id`": 78913,  `"Customer`": `"Jason Sweet`", `"Quantity`": 1, `"Price`": 18.00}"
