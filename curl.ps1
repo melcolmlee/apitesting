@@ -9,24 +9,33 @@ $duration = 5
 $timeStart = Get-Date
 $timeEnd = $timeStart.AddMinutes($duration)
 
-#Format date and time 
-$timeInfo = New-Object System.Globalization.DateTimeFormatInfo;
-$timeStamp = Get-Date -Format $timeInfo.SortableDateTimePattern;
-$timeStamp = $timeStamp.Replace(":","-")
-
 #Import CSV of API
 $apiList = Import-Csv .\endpoints.csv
 
 do{
 
     ForEach ($api in $apiList){
-        $timer = [System.Diagnostics.Stopwatch]::StartNew()
+        #Format date and time
+        $timeInfo = New-Object System.Globalization.DateTimeFormatInfo;
+        $timeStamp = Get-Date -Format $timeInfo.SortableDateTimePattern;
+        $timeStamp = $timeStamp.Replace(":","-")
+        
+        #Set body of request
         $body = $api.query
-        $response = Invoke-RestMethod $api.endpoint -Method 'POST' -Headers $headers -Body $body
-        $timer.Stop()
-        $response | ConvertTo-Json
-        $responseTime = $timer.Elapsed.TotalMilliseconds.ToString()
-        Write-Host $responseTime "ms"
+        
+        try {
+            $url = $api.endpoint
+            $timer = [System.Diagnostics.Stopwatch]::StartNew()
+            $response = Invoke-RestMethod $url -Method 'POST' -Headers $headers -Body $body
+            $timer.Stop()
+            $response | ConvertTo-Json
+            $responseTime = $timer.Elapsed.TotalMilliseconds.ToString()
+            #Write-Host $responseTime "ms"
+            Add-Content .\apiTestLog.csv "$timeStamp,$url,PASS,$responseTime,$response" 
+        }
+        catch {
+            Add-Content .\apiTestLog.csv "$timeStamp,$url,FAIL,$responseTime,$response" 
+        }       
 }
 
     Start-Sleep -Seconds 10 
