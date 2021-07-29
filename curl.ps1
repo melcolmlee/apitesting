@@ -36,7 +36,7 @@ do{
         catch {
             Add-Content .\apiTestLog.csv "$timeStamp,$url,FAIL,$responseTime,$response" 
         }       
-}
+    }
 
     Start-Sleep -Seconds 10 
     $timeNow = Get-Date
